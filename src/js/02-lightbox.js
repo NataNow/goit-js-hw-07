@@ -1,38 +1,32 @@
-import { galleryItems } from './gallery-items.js';
-// Change code below this lineimport { galleryItems } from "./gallery-items.js";
+import { galleryItems } from "./gallery-items.js";
+// Change code below this line
 
-function createGaleryMarkup(galleryItems) {
-    const markup = galleryItems
-      .map(({ preview = "#", original = "#", description = "#" } = {}) => {
-        return `<div class="gallery__item">
-        <a class="gallery__item" href="${original}">
-          <img
-            class="gallery__image"
-            src="${preview}"
-            data-source="${original}"
-            alt="${description}"
-          />
-        </a>
-      </div>`;
-      })
-      .join("");
-    return markup;
-  }
-  
-  const gallery = document.querySelector(".gallery");
-  
-  const galleryMarkup = createGaleryMarkup(galleryItems);
-  
-  gallery.insertAdjacentHTML("beforeend", galleryMarkup);
-  
-  const lightbox = new SimpleLightbox(".gallery a", {
-    captionsData: "alt",
-    captionDelay: 250,
-    animationSlide: false,
-    animationSpeed: 500,
-    maxZoom: 5,
-  });
 console.log(galleryItems);
+
+const markUp = galleryItems
+  .map(
+    (item) =>
+      `<div class="gallery__item">
+    <a class="gallery__link" href="${item.original}">
+    <img
+      class="gallery__image"
+      src="${item.preview}"
+       data-source="${item.original}"
+      alt="${item.description}"
+    />
+  </a>
+</div>`
+  )
+  .join("");
+
+const gallery = document.querySelector(".gallery");
+
+gallery.insertAdjacentHTML("beforeend", markUp);
+
+new SimpleLightbox(".gallery a", {
+  captionsData: "alt",
+  captionDelay: 250,
+});
 
 
 // Зроби таку саму галерею як в першому завданні, але використовуючи бібліотеку SimpleLightbox, яка візьме на себе обробку кліків по зображеннях, відкриття і закриття модального вікна, а також гортання зображень за допомогою клавіатури.

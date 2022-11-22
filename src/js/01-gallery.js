@@ -1,70 +1,49 @@
-import { galleryItems } from './gallery-items.js';
+import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-function makeMarkup() {
-  let markup = "";
-  for (const item of galleryItems) {
-    const { preview = "#", original = "#", description = "#" } = item;
-    markup += `<div class="gallery__item">
-        <a class="gallery__link" href="${original}">
-        <img
-            class="gallery__image"
-            src="${preview}"
-            data-source="${original}"
-            alt="${description}"
-        />
-        </a>
-    </div>`;
-  }
-  return markup;
-}
-
-const modal = {
-  gallery: document.querySelector(".gallery"),
-  instance: {},
-
-  handleGalleryClick: function (event) {
-    event.preventDefault();
-    const { target, currentTarget } = event;
-    if (currentTarget === target) {
-      return;
-    }
-    const srcImage = target.dataset.source;
-    this.createModalImage(srcImage);
-    this.showModalImage();
-  },
-
-  createModalImage: function (srcImage) {
-    this.instance = basicLightbox.create(`<img src="${srcImage}">`, {
-      onShow: this.onShowModalImage.bind(this),
-      onClose: this.onCloseModalImage.bind(this),
-    });
-  },
-
-  onShowModalImage: function () {
-    document.addEventListener("keydown", this.handleEscapePress);
-  },
-
-  onCloseModalImage: function () {
-    document.removeEventListener("keydown", this.handleEscapePress);
-  },
-
-  handleEscapePress: function (event) {
-    if (event.code === "Escape") modal.instance.close();
-  },
-
-  renderGalleryMarkup: function (markup) {
-    this.gallery.innerHTML = markup;
-  },
-
-  showModalImage: function () {
-    this.instance.show();
-  },
-};
-
-modal.renderGalleryMarkup(makeMarkup());
-modal.gallery.addEventListener("click", modal.handleGalleryClick.bind(modal));
 console.log(galleryItems);
+
+const markUp = galleryItems
+  .map(
+    (item) =>
+      `<div class="gallery__item">
+    <a class="gallery__link" href="${item.original}">
+    <img
+      class="gallery__image"
+      src="${item.preview}"
+       data-source="${item.original}"
+      alt="${item.description}"
+    />
+  </a>
+</div>`
+  )
+  .join(""); 
+// ініціалізація галереї
+const gallery = document.querySelector(".gallery");
+// добавлення в ДОМ елементів галереї
+gallery.insertAdjacentHTML("beforeend", markUp);
+// прослуховумо клік
+gallery.addEventListener("click", oneImgContenerClick);
+// функція попереджає перевантаження строрінки та спрацюванні на клік поза зоною картинки
+function oneImgContenerClick(event) {
+  event.preventDefault();
+  if (event.target.nodeName !== "IMG") {
+    return;
+  }
+// вибір картинки
+  const selectedImage = event.target.dataset.source;
+  // відкриття модалки
+  const instance = basicLightbox.create(`
+    <img src="${selectedImage}" width="800" height="600">
+`);
+  instance.show();
+// закритття модалки по Escape
+  gallery.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      instance.close();
+    }
+  });
+}
 
 
 
